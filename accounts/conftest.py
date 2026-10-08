@@ -15,7 +15,7 @@ def fast_password_hasher(settings):
     settings.PASSWORD_HASHERS = ['django.contrib.auth.hashers.MD5PasswordHasher']
 
 
-def make_client(user):
+def make_client(user=None):
     client = APIClient()
     if user is not None:
         client.force_authenticate(user=user)
@@ -24,6 +24,7 @@ def make_client(user):
 @pytest.fixture
 def api_client():
     return make_client()
+
 
 @pytest.fixture
 def customer(db):
