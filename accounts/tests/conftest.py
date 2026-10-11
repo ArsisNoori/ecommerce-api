@@ -1,7 +1,7 @@
 import pytest
 from django.core.cache import cache
 from rest_framework.test import APIClient
-from accounts .models import User
+from accounts .models import User, Address
 
 
 @pytest.fixture(autouse=True)
@@ -14,7 +14,6 @@ def clear_cache():
 def fast_password_hasher(settings):
     settings.PASSWORD_HASHERS = ['django.contrib.auth.hashers.MD5PasswordHasher']
 
-
 def make_client(user=None):
     client = APIClient()
     if user is not None:
@@ -24,7 +23,6 @@ def make_client(user=None):
 @pytest.fixture
 def api_client():
     return make_client()
-
 
 @pytest.fixture
 def customer(db):
@@ -38,11 +36,9 @@ def customer(db):
 def seller(db):
     return User.objects.create_user(username='seller1', password='pass12345', is_seller=True)
 
-
 @pytest.fixture
 def other_seller(db):
     return User.objects.create_user(username='seller2', password='pass12345', is_seller=True)
-
 
 @pytest.fixture
 def staff_user(db):
@@ -51,7 +47,6 @@ def staff_user(db):
 @pytest.fixture
 def auth_client(customer):
     return make_client(customer)
-
 
 @pytest.fixture
 def seller_client(seller):
@@ -65,6 +60,17 @@ def other_seller(other_seller):
 def staff_client(staff_user):
     return make_client(staff_user)
 
+@pytest.fixture
+def address(customer):
+    return Address.objects.create(
+        user=customer,
+        title='Home',
+        reverse_name='Ali Rezaei',
+        phone_number='09121234567',
+        city='Tehran',
+        postal_code='1234567890',
+        full_address='Valiasr St, No. 10',
+    )
 
 
 

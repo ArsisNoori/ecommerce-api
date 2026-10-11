@@ -1,6 +1,7 @@
 from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
-from .models import User
+from .models import User, Address
+import re
 
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, validators=[validate_password])
@@ -66,6 +67,32 @@ class ChangePasswordSerializer(serializers.Serializer):
         user.save(update_fields=['password'])
         return user
 
+class AddressSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Address
+        fields = [
+            'id',
+            'title',
+            'reverse_name',
+            'phone_number',
+            'city',
+            'postal_code',
+            'full_address',
+            'is_default',
+        ]
+        read_only_fields = ['id']
+
+    def validate_postal_code(self, value):
+        if not value.isdigit() or len(value) != 10:
+            raise serializers.ValidationError(
+                'Postal code must contain exactly 10 digits.'
+            )
+        return value
+
+    def validate_phone_number(self, value):
+        if not re.fullmatch(r'^\+?\d{7,15}$', value):
+            raise serializers.ValidationError('Enter a valid phone number')
+        return value
 
 
 

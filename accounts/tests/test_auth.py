@@ -20,6 +20,7 @@ class TestRegister:
         user = User.objects.get(username='arsis')
         assert user.password != PAYLOAD['password']
         assert user.check_password(PAYLOAD['password'])
+
     def test_default_is_not_seller(self,api_client):
         from accounts.models import User
         api_client.post(REGISTER_URL, PAYLOAD)
